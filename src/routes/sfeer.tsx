@@ -1,26 +1,92 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useSiteContent } from "@/lib/site-content";
-import terras from "@/assets/terras.jpg";
-import interior from "@/assets/interior.jpg";
-import dish from "@/assets/dish.jpg";
-import cocktail from "@/assets/cocktail.jpg";
-import markt from "@/assets/markt.jpg";
-import dessert from "@/assets/dessert.jpg";
-import coffee from "@/assets/coffee.jpg";
 
 export const Route = createFileRoute("/sfeer")({
   component: SfeerPage,
 });
 
 const photos = [
-  { src: terras, alt: "Terras van De Prater met parasols en gasten" },
-  { src: interior, alt: "Warm houten interieur van de brasserie" },
-  { src: markt, alt: "Grote Markt van Sint-Niklaas in de avondzon" },
-  { src: dish, alt: "Steak met frietjes en frisse salade" },
-  { src: cocktail, alt: "Cocktail aan de bar" },
-  { src: dessert, alt: "Dame Blanche dessert" },
-  { src: coffee, alt: "Verse cappuccino" },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i5142f264b65a9d21/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 1",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i2da0bc0aae2a5af4/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 2",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/ib2f4c1c2013ebf8d/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 3",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i8de86b6f1e09682e/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 4",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i02d5c4f5c4040907/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 5",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/iccf3f21fa584766e/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 6",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/ib4b3b049437a107e/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 7",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/ibfb2622e99d0df71/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 8",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i10410f03be13da93/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 9",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i911e99875e829cf3/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 10",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/idbb12e9230ccde30/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 11",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i245f70fe4a75badb/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 12",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i377a5af12b403418/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 13",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/if858da7588c231b8/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 14",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i10692cbaeb2324b8/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 15",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/idb90919765ff86ca/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 16",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/ib8e3b0b6e1fe5a12/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 17",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i71a8f1747a2217ba/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 18",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/i5631771a8d5c3382/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 19",
+  },
+  {
+    src: "https://image.jimcdn.com/app/cms/image/transf/none/path/s33a68ffd396e4903/image/ieea16d4e49a7526a/version/1471980848/image.jpg",
+    alt: "Sfeerfoto De Prater 20",
+  },
 ];
 
 function SfeerPage() {
