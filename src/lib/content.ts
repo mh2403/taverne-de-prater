@@ -580,19 +580,69 @@ export const defaultSiteData: SiteData = {
   },
   menuPhotos: [
     {
-      title: "Kaart cover",
+      title: "Kaart voorpagina",
       alt: "Voorpagina van de menukaart van De Prater",
-      src: "",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/ia0d31d3c077b1db3/version/1757528793/image.png",
     },
     {
-      title: "Bieren en dranken",
-      alt: "Drankenpagina van de menukaart van De Prater",
-      src: "",
+      title: "Bieren van 't vat",
+      alt: "Menukaart pagina met bieren van het vat",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i7c52e6bfe450bc7d/version/1757528963/image.png",
     },
     {
-      title: "Eten en desserts",
-      alt: "Gerechtenpagina van de menukaart van De Prater",
-      src: "",
+      title: "Bieren op fles en alcoholvrij",
+      alt: "Menukaart pagina met bieren op fles en alcoholvrije bieren",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i3bd2f0b3547bf87b/version/1757528963/image.png",
+    },
+    {
+      title: "Bieren op fles overzicht",
+      alt: "Menukaart pagina met overzicht bieren op fles",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i817034dd65efcc82/version/1757528963/image.png",
+    },
+    {
+      title: "Frisdranken",
+      alt: "Menukaart pagina met frisdranken",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/if675a7d258b75189/version/1757528963/image.png",
+    },
+    {
+      title: "Warme dranken",
+      alt: "Menukaart pagina met warme dranken",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i461c9d1aec6da3c8/version/1757528963/image.png",
+    },
+    {
+      title: "Aperitieven en likeuren",
+      alt: "Menukaart pagina met aperitieven, likeuren en sterke dranken",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i5c21bb57547f1275/version/1757528963/image.png",
+    },
+    {
+      title: "Wijnen",
+      alt: "Menukaart pagina met wijnen en bubbels",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/ib3cf5953775d9d73/version/1757528963/image.png",
+    },
+    {
+      title: "Knabbeltjes en croques",
+      alt: "Menukaart pagina met knabbeltjes, croques en baguettes",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/id3abc7f20a5ce324/version/1757528963/image.png",
+    },
+    {
+      title: "Snacks en voorgerechten",
+      alt: "Menukaart pagina met snacks en voorgerechten",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i356ffd48e7954e57/version/1757528963/image.png",
+    },
+    {
+      title: "Koude schotels en kindergerechten",
+      alt: "Menukaart pagina met koude schotels en kindergerechten",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/ic728dc7e55384e65/version/1757528963/image.png",
+    },
+    {
+      title: "Vlees- en visgerechten",
+      alt: "Menukaart pagina met vleesgerechten en visgerechten",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/i1a0dd14e398c1c02/version/1757528963/image.png",
+    },
+    {
+      title: "Roomijs en desserts",
+      alt: "Menukaart pagina met roomijs, pannenkoeken en dessert",
+      src: "https://image.jimcdn.com/app/cms/image/transf/dimension%3D1920x400%3Aformat%3Dpng/path/s33a68ffd396e4903/image/ie87637d2fad7d473/version/1757528963/image.png",
     },
   ],
   dagmenu: {
@@ -674,7 +724,17 @@ export function loadSiteData(): SiteData {
     if (!hasMinimumSiteShape(parsed)) {
       return cloneSiteData(defaultSiteData);
     }
-    return parsed;
+
+    const current = parsed as SiteData;
+    const hasUsableMenuPhotos = current.menuPhotos.some((photo) => photo.src.trim().length > 0);
+    if (hasUsableMenuPhotos) {
+      return current;
+    }
+
+    return {
+      ...current,
+      menuPhotos: cloneSiteData(defaultSiteData).menuPhotos,
+    };
   } catch {
     return cloneSiteData(defaultSiteData);
   }

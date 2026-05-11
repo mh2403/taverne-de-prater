@@ -19,15 +19,26 @@ export function SiteHeader() {
 
   useEffect(() => {
     if (!open) return;
-    const previous = document.body.style.overflow;
+
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
     return () => {
-      document.body.style.overflow = previous;
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 overflow-x-clip border-b border-border/70 bg-background/85 backdrop-blur-xl">
       <div className="border-b border-border/60 bg-primary px-4 py-2 text-primary-foreground md:px-6">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 text-xs md:text-sm">
           <span className="inline-flex items-center gap-2 font-medium">
@@ -47,14 +58,17 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 md:px-6">
         <Link
           to="/"
-          className="flex items-baseline gap-2"
+          className="min-w-0"
           aria-label={`${data.business.name} home`}
+          onClick={() => setOpen(false)}
         >
-          <span className="font-serif text-3xl text-primary md:text-4xl">{data.business.name}</span>
-          <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground sm:inline">
+          <span className="block truncate font-serif text-3xl text-primary md:text-4xl">
+            {data.business.name}
+          </span>
+          <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground sm:block">
             {data.business.tagline}
           </span>
         </Link>
@@ -90,10 +104,10 @@ export function SiteHeader() {
 
         <button
           type="button"
-          aria-label="Menu openen"
+          aria-label={open ? "Menu sluiten" : "Menu openen"}
           aria-expanded={open}
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-border bg-card text-foreground md:hidden"
-          onClick={() => setOpen((o) => !o)}
+          className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-foreground md:hidden"
+          onClick={() => setOpen((value) => !value)}
         >
           {open ? <X className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
         </button>
@@ -102,11 +116,11 @@ export function SiteHeader() {
       {open ? (
         <div className="fixed inset-0 z-[120] bg-black/50 md:hidden" onClick={() => setOpen(false)}>
           <nav
-            className="surface-glass ml-auto flex h-dvh w-full max-w-sm flex-col gap-2 overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]"
+            className="surface-glass flex h-[100dvh] w-full flex-col"
             aria-label="Mobiele navigatie"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-border/70 px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))]">
               <span className="font-serif text-2xl text-primary">Menu</span>
               <button
                 type="button"
@@ -117,32 +131,38 @@ export function SiteHeader() {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            {nav.map((n) => (
+
+            <div className="flex-1 space-y-2 overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
+              {nav.map((n) => (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="flex min-h-12 items-center rounded-xl border border-border/60 bg-card px-4 text-base font-semibold text-foreground/90"
+                  activeProps={{ className: "border-primary/40 bg-primary/10 text-primary" }}
+                  activeOptions={{ exact: n.to === "/" }}
+                >
+                  {n.label}
+                </Link>
+              ))}
+
               <Link
-                key={n.to}
-                to={n.to}
+                to="/admin"
                 onClick={() => setOpen(false)}
-                className="rounded-xl border border-border/60 bg-card px-4 py-3 text-base font-semibold text-foreground/90"
-                activeProps={{ className: "border-primary/40 bg-primary/10 text-primary" }}
-                activeOptions={{ exact: n.to === "/" }}
+                className="mt-2 flex min-h-12 items-center rounded-xl border border-primary/30 bg-primary px-4 text-base font-semibold text-primary-foreground"
               >
-                {n.label}
+                Admin
               </Link>
-            ))}
-            <Link
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className="rounded-xl border border-primary/30 bg-primary px-4 py-3 text-base font-semibold text-primary-foreground"
-            >
-              Admin
-            </Link>
-            <a
-              href={`tel:${data.business.phoneIntl}`}
-              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-base font-semibold text-primary"
-            >
-              <Phone className="h-4 w-4" /> {data.business.phone}
-            </a>
-            <p className="mt-1 text-xs text-muted-foreground">{status.label}</p>
+
+              <a
+                href={`tel:${data.business.phoneIntl}`}
+                className="mt-2 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-base font-semibold text-primary"
+              >
+                <Phone className="h-4 w-4" /> {data.business.phone}
+              </a>
+
+              <p className="pt-1 text-xs text-muted-foreground">{status.label}</p>
+            </div>
           </nav>
         </div>
       ) : null}

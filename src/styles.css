@@ -90,10 +90,14 @@
 @layer base {
   * {
     border-color: var(--color-border);
+    min-width: 0;
   }
 
   html {
     scroll-behavior: smooth;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   body {
@@ -105,7 +109,15 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv01";
     line-height: 1.55;
-    overflow-x: clip;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   h1,
@@ -128,6 +140,11 @@
       border-color 180ms ease,
       box-shadow 180ms ease,
       transform 180ms ease;
+  }
+
+  a,
+  button {
+    touch-action: manipulation;
   }
 
   :focus-visible {

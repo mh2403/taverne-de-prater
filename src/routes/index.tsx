@@ -29,7 +29,7 @@ function HomePage() {
           className="absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/40 to-black/70"
           aria-hidden
         />
-        <div className="mx-auto max-w-6xl px-4 py-24 text-primary-foreground sm:py-32 md:px-6 md:py-40">
+        <div className="mx-auto max-w-6xl px-4 py-20 text-primary-foreground sm:py-24 md:px-6 md:py-32">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.2em] backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" /> {data.copy.homeHeroBadge}
           </span>
@@ -64,7 +64,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 py-20 text-center md:px-6">
+      <section className="mx-auto max-w-5xl px-4 py-14 text-center md:px-6 md:py-16">
         <p className="text-xs uppercase tracking-[0.25em] text-primary/70">Welkom</p>
         <h2 className="mt-3 font-serif text-3xl text-primary sm:text-4xl">
           {data.copy.homeIntroTitle}
@@ -124,11 +124,18 @@ function HomePage() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                   Prijzen
                 </p>
-                <ul className="mt-2 grid grid-cols-2 gap-2 text-sm">
+                <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {data.weeklyMenu.prices.map((price) => (
-                    <li key={price.label} className="flex items-center justify-between gap-2">
-                      <span>{price.label}</span>
-                      <strong className="font-serif text-primary">{price.price}</strong>
+                    <li
+                      key={price.label}
+                      className="flex min-h-12 items-center justify-between gap-3 rounded-lg border border-border/80 bg-card/80 px-3"
+                    >
+                      <span className="text-base font-semibold text-foreground/90 sm:text-sm">
+                        {price.label}
+                      </span>
+                      <strong className="whitespace-nowrap font-serif text-2xl leading-none text-primary sm:text-xl tabular-nums">
+                        {price.price}
+                      </strong>
                     </li>
                   ))}
                 </ul>
@@ -145,7 +152,7 @@ function HomePage() {
       </section>
 
       <section className="bg-primary text-primary-foreground">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 md:grid-cols-2 md:px-6">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-2 md:px-6 md:py-16">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-gold">Dagmenu</p>
             <h2 className="mt-3 font-serif text-3xl sm:text-4xl">{data.copy.homeDagmenuTitle}</h2>
@@ -179,7 +186,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 md:px-6">
+      <section className="mx-auto max-w-6xl px-4 py-14 md:px-6 md:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-primary/70">Sfeer</p>
@@ -220,7 +227,7 @@ function HomePage() {
       </section>
 
       <section className="bg-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
+        <div className="mx-auto max-w-6xl px-4 py-14 md:px-6 md:py-16">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm">
               <div className="flex">
@@ -252,7 +259,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 md:px-6">
+      <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 md:px-6 md:pb-14 md:pt-16">
         <div className="overflow-hidden rounded-3xl bg-gradient-warm text-primary-foreground shadow-warm">
           <div className="grid gap-8 p-8 md:grid-cols-2 md:p-12">
             <div>

@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, FileDown, UtensilsCrossed } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cloneSiteData, type MenuCategory, type SiteData } from "@/lib/content";
+import { downloadDagmenuPdf, downloadWeekmenuPdf } from "@/lib/menu-pdf";
 import { useSiteContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/admin")({
@@ -23,6 +25,18 @@ const adminSections = [
 
 type AdminSectionKey = (typeof adminSections)[number]["key"];
 
+const adminSectionHints: Record<AdminSectionKey, string> = {
+  weekmenu: "Wekelijkse gerechten en prijzen aanpassen",
+  photos: "Kaartfoto's tonen op de menupagina",
+  menu: "Alle categorieën en items van de kaart beheren",
+  content: "Titels en teksten op de website wijzigen",
+  business: "Adres, telefoon en route-instellingen",
+  hours: "Openingsuren per dag updaten",
+  dagmenu: "Dagmenu van vandaag publiceren",
+  reviews: "Quotes en testimonials beheren",
+  seo: "Site titel en meta beschrijving",
+};
+
 function AdminPage() {
   const { data, setData, resetData } = useSiteContent();
   const isMobile = useIsMobile();
@@ -42,6 +56,8 @@ function AdminPage() {
   const reviewCount = draft.reviews.length;
   const weekDayCount = draft.weeklyMenu.days.length;
   const menuPhotoCount = draft.menuPhotos.filter((photo) => photo.src.trim()).length;
+  const activeSectionIndex = adminSections.findIndex((section) => section.key === activeSection);
+  const activeSectionMeta = adminSections[activeSectionIndex] ?? adminSections[0];
 
   const updateCopy = (key: keyof SiteData["copy"], value: string) => {
     setDraft((prev) => ({ ...prev, copy: { ...prev.copy, [key]: value } }));
@@ -70,11 +86,29 @@ function AdminPage() {
     setStatusMessage("Standaard inhoud hersteld.");
   };
 
+  const exportWeekmenuPdf = async () => {
+    try {
+      await downloadWeekmenuPdf(draft);
+      setStatusMessage("Weekmenu PDF aangemaakt en gedownload.");
+    } catch {
+      setStatusMessage("Kon weekmenu PDF niet aanmaken.");
+    }
+  };
+
+  const exportDagmenuPdf = async () => {
+    try {
+      await downloadDagmenuPdf(draft);
+      setStatusMessage("Dagmenu PDF aangemaakt en gedownload.");
+    } catch {
+      setStatusMessage("Kon dagmenu PDF niet aanmaken.");
+    }
+  };
+
   const showSection = (section: AdminSectionKey) => !isMobile || activeSection === section;
 
   return (
     <SiteLayout showMobileCta={false}>
-      <section className="mx-auto max-w-7xl px-4 pb-28 pt-10 md:px-6 md:pb-28 md:pt-16">
+      <section className="mx-auto max-w-7xl px-4 pb-44 pt-10 md:px-6 md:pb-28 md:pt-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-primary/70">Beheeromgeving</p>
@@ -84,7 +118,7 @@ function AdminPage() {
               kaartfoto's kan je hier wekelijks vernieuwen.
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+          <div className="grid w-full grid-cols-2 gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground sm:w-auto sm:grid-cols-1">
             <div>{draft.menu.length} categorieën</div>
             <div>{menuItemCount} menu-items</div>
             <div>{weekDayCount} weekmenu-dagen</div>
@@ -94,32 +128,126 @@ function AdminPage() {
         </div>
 
         {isMobile ? (
-          <div className="surface-glass sticky top-[124px] z-20 mt-6 rounded-2xl p-3">
+          <div className="surface-glass sticky top-[116px] z-20 mt-6 rounded-2xl p-3">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
               Secties
             </p>
-            <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {adminSections.map((section) => (
-                <button
-                  key={section.key}
-                  type="button"
-                  onClick={() => setActiveSection(section.key)}
-                  className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-                    activeSection === section.key
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-foreground/85"
-                  }`}
-                >
-                  {section.label}
-                </button>
-              ))}
+            <label className="block">
+              <span className="sr-only">Kies adminsectie</span>
+              <select
+                value={activeSection}
+                onChange={(event) => setActiveSection(event.target.value as AdminSectionKey)}
+                className="min-h-11 w-full rounded-xl border border-input bg-card px-3 text-base font-semibold"
+              >
+                {adminSections.map((section, index) => (
+                  <option key={section.key} value={section.key}>
+                    {index + 1}. {section.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveSection(adminSections[Math.max(activeSectionIndex - 1, 0)].key)
+                }
+                disabled={activeSectionIndex === 0}
+                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-card px-3 text-sm font-semibold text-foreground disabled:opacity-45"
+              >
+                Vorige
+              </button>
+              <p className="text-center text-xs text-muted-foreground">
+                {activeSectionIndex + 1} / {adminSections.length}
+              </p>
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveSection(
+                    adminSections[Math.min(activeSectionIndex + 1, adminSections.length - 1)].key,
+                  )
+                }
+                disabled={activeSectionIndex === adminSections.length - 1}
+                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-card px-3 text-sm font-semibold text-foreground disabled:opacity-45"
+              >
+                Volgende
+              </button>
             </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              <strong className="font-semibold text-foreground">{activeSectionMeta.label}:</strong>{" "}
+              {adminSectionHints[activeSectionMeta.key]}
+            </p>
           </div>
         ) : null}
+
+        <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/[0.04] p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/75">
+                Prioriteit: weekmenu & dagmenu
+              </p>
+              <h2 className="mt-1 font-serif text-2xl text-primary">
+                Snelle weekflow voor telefoon
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Werkvolgorde: bewerk weekmenu, bewerk dagmenu, klik publiceren, download PDF en
+                plaats op Facebook.
+              </p>
+            </div>
+            <div className="flex w-full flex-wrap gap-2 md:w-auto">
+              <button
+                type="button"
+                onClick={() => setActiveSection("weekmenu")}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold md:flex-none"
+              >
+                <CalendarDays className="h-4 w-4" />
+                Weekmenu
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveSection("dagmenu")}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold md:flex-none"
+              >
+                <UtensilsCrossed className="h-4 w-4" />
+                Dagmenu
+              </button>
+              <button
+                type="button"
+                onClick={exportWeekmenuPdf}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground md:flex-none"
+              >
+                <FileDown className="h-4 w-4" />
+                Weekmenu PDF
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {showSection("weekmenu") ? (
             <Card title="Weekmenu van deze week">
+              <p className="text-sm text-muted-foreground">
+                Dit is je belangrijkste blok. Pas hier de hele week aan en maak daarna meteen een
+                deelbare PDF.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={exportWeekmenuPdf}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  <FileDown className="h-4 w-4" />
+                  Download weekmenu PDF
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveSection("dagmenu")}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-semibold"
+                >
+                  <UtensilsCrossed className="h-4 w-4" />
+                  Ga naar dagmenu
+                </button>
+              </div>
               <Input
                 label="Titel"
                 value={draft.weeklyMenu.title}
@@ -150,6 +278,44 @@ function AdminPage() {
                   }));
                 }}
               />
+
+              <div className="grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraft((prev) => {
+                      const next = cloneSiteData(prev);
+                      next.weeklyMenu.days = [
+                        { label: "Dinsdag", dish: "" },
+                        { label: "Woensdag", dish: "" },
+                        { label: "Donderdag", dish: "" },
+                        { label: "Vrijdag", dish: "" },
+                        { label: "Weekend", dish: "" },
+                      ];
+                      return next;
+                    });
+                  }}
+                  className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-accent"
+                >
+                  Zet standaard weekstructuur
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraft((prev) => {
+                      const next = cloneSiteData(prev);
+                      if (next.weeklyMenu.days.length < 2) return next;
+                      const lastDish = next.weeklyMenu.days[next.weeklyMenu.days.length - 2]?.dish;
+                      if (!lastDish) return next;
+                      next.weeklyMenu.days[next.weeklyMenu.days.length - 1].dish = lastDish;
+                      return next;
+                    });
+                  }}
+                  className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-accent"
+                >
+                  Kopieer vorige gerecht
+                </button>
+              </div>
 
               <div className="space-y-3">
                 {draft.weeklyMenu.days.map((day, dayIndex) => (
@@ -291,6 +457,22 @@ function AdminPage() {
               >
                 Prijsregel toevoegen
               </button>
+
+              <div className="rounded-xl border border-border bg-secondary/30 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">
+                  Live voorbeeld PDF-inhoud
+                </p>
+                <h3 className="mt-2 font-serif text-xl text-primary">{draft.weeklyMenu.title}</h3>
+                <p className="text-sm text-muted-foreground">{draft.weeklyMenu.weekLabel}</p>
+                <div className="mt-3 space-y-2">
+                  {draft.weeklyMenu.days.map((day, dayIndex) => (
+                    <div key={`${day.label}-preview-${dayIndex}`} className="text-sm">
+                      <p className="font-semibold text-primary">{day.label}</p>
+                      <p className="text-foreground/85">{day.dish || "-"}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </Card>
           ) : null}
 
@@ -343,7 +525,7 @@ function AdminPage() {
                       <input
                         type="file"
                         accept="image/*"
-                        className="mt-1 block w-full text-sm"
+                        className="mt-1 block w-full text-base md:text-sm"
                         onChange={async (event) => {
                           const file = event.target.files?.[0];
                           if (!file) return;
@@ -511,7 +693,7 @@ function AdminPage() {
                               return next;
                             });
                           }}
-                          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          className="mt-1 min-h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm"
                         />
                       </label>
                       <label className="text-xs text-muted-foreground">
@@ -527,7 +709,7 @@ function AdminPage() {
                               return next;
                             });
                           }}
-                          className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          className="mt-1 min-h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm"
                         />
                       </label>
                     </div>
@@ -539,6 +721,34 @@ function AdminPage() {
 
           {showSection("dagmenu") ? (
             <Card title="Dagmenu">
+              <p className="text-sm text-muted-foreground">
+                Dit menu verschijnt ook op home. Werk dit dagelijks bij en exporteer meteen voor
+                socials.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={exportDagmenuPdf}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  <FileDown className="h-4 w-4" />
+                  Download dagmenu PDF
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraft((prev) => {
+                      const next = cloneSiteData(prev);
+                      const fallback = next.weeklyMenu.days[0]?.dish ?? "";
+                      next.dagmenu.main = next.dagmenu.main || fallback;
+                      return next;
+                    });
+                  }}
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-card px-3 text-sm font-semibold"
+                >
+                  Vul hoofdgerecht uit weekmenu
+                </button>
+              </div>
               <Input
                 label="Label datum (bv. Vandaag of Maandag 12 mei)"
                 value={draft.dagmenu.date}
@@ -782,30 +992,61 @@ function AdminPage() {
         ) : null}
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur md:z-50">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:px-6">
-          <p className="hidden w-full text-xs text-muted-foreground md:block md:w-auto">
-            {statusMessage || "Niet opgeslagen wijzigingen blijven enkel in dit formulier."}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur md:hidden">
+        <div className="mx-auto max-w-7xl px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+          <p className="mb-2 text-xs text-muted-foreground">
+            {statusMessage || "Wijzigingen blijven lokaal tot je publiceert."}
           </p>
-          <div className="grid w-full grid-cols-3 gap-2 md:flex md:w-auto md:flex-wrap">
+          <button
+            type="button"
+            onClick={saveChanges}
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-primary px-3 text-base font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Publiceer wijzigingen
+          </button>
+          <div className="mt-2 grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={restorePublished}
-              className="rounded-md border border-border px-2 py-2 text-xs font-semibold hover:bg-accent md:px-3 md:text-sm md:font-medium"
+              className="rounded-xl border border-border px-2 py-2.5 text-sm font-semibold hover:bg-accent"
             >
               Verwerp wijzigingen
             </button>
             <button
               type="button"
               onClick={restoreDefaults}
-              className="rounded-md border border-border px-2 py-2 text-xs font-semibold hover:bg-accent md:px-3 md:text-sm md:font-medium"
+              className="rounded-xl border border-border px-2 py-2.5 text-sm font-semibold hover:bg-accent"
+            >
+              Herstel defaults
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-50 hidden border-t border-border bg-background/95 backdrop-blur md:block">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-3">
+          <p className="text-xs text-muted-foreground">
+            {statusMessage || "Niet opgeslagen wijzigingen blijven enkel in dit formulier."}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={restorePublished}
+              className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-accent"
+            >
+              Verwerp wijzigingen
+            </button>
+            <button
+              type="button"
+              onClick={restoreDefaults}
+              className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-accent"
             >
               Herstel defaults
             </button>
             <button
               type="button"
               onClick={saveChanges}
-              className="rounded-md bg-primary px-2 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 md:px-3 md:text-sm"
+              className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
             >
               Publiceer wijzigingen
             </button>
@@ -946,7 +1187,7 @@ function Card({
 }) {
   return (
     <section
-      className={`rounded-2xl border border-border bg-card p-5 shadow-sm ${className ?? ""}`}
+      className={`rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5 ${className ?? ""}`}
     >
       <h2 className="font-serif text-2xl text-primary">{title}</h2>
       <div className="mt-4 space-y-3">{children}</div>
@@ -971,7 +1212,7 @@ function Input({
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        className="mt-1 min-h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm"
       />
     </label>
   );
@@ -997,7 +1238,7 @@ function Textarea({
         rows={rows}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm"
       />
     </label>
   );

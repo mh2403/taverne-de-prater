@@ -5,8 +5,8 @@ export function SiteFooter() {
   const { data } = useSiteContent();
 
   return (
-    <footer className="mt-20 border-t border-border/70 bg-secondary/55">
-      <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
+    <footer className="mt-10 border-t border-border/70 bg-secondary/55 md:mt-14">
+      <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-12">
         <div className="section-shell rounded-3xl p-6 shadow-sm md:p-10">
           <div className="grid gap-10 md:grid-cols-4">
             <div>
