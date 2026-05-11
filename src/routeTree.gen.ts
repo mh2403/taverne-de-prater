@@ -9,8 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SfeerRouteImport } from './routes/sfeer'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as DagmenuRouteImport } from './routes/dagmenu'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SfeerRoute = SfeerRouteImport.update({
+  id: '/sfeer',
+  path: '/sfeer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DagmenuRoute = DagmenuRouteImport.update({
+  id: '/dagmenu',
+  path: '/dagmenu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +43,72 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/dagmenu': typeof DagmenuRoute
+  '/menu': typeof MenuRoute
+  '/sfeer': typeof SfeerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/dagmenu': typeof DagmenuRoute
+  '/menu': typeof MenuRoute
+  '/sfeer': typeof SfeerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/dagmenu': typeof DagmenuRoute
+  '/menu': typeof MenuRoute
+  '/sfeer': typeof SfeerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
+  id: '__root__' | '/' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
+  DagmenuRoute: typeof DagmenuRoute
+  MenuRoute: typeof MenuRoute
+  SfeerRoute: typeof SfeerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sfeer': {
+      id: '/sfeer'
+      path: '/sfeer'
+      fullPath: '/sfeer'
+      preLoaderRoute: typeof SfeerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dagmenu': {
+      id: '/dagmenu'
+      path: '/dagmenu'
+      fullPath: '/dagmenu'
+      preLoaderRoute: typeof DagmenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +121,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactRoute: ContactRoute,
+  DagmenuRoute: DagmenuRoute,
+  MenuRoute: MenuRoute,
+  SfeerRoute: SfeerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
