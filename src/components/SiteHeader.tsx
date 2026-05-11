@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu as MenuIcon, X, Phone, MapPin } from "lucide-react";
 import { isOpenNow } from "@/lib/hours";
 import { useSiteContent } from "@/lib/site-content";
@@ -17,10 +17,19 @@ export function SiteHeader() {
   const { data } = useSiteContent();
   const status = isOpenNow(data.openingHours);
 
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
       <div className="border-b border-border/60 bg-primary px-4 py-2 text-primary-foreground md:px-6">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 text-xs md:text-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 text-xs md:text-sm">
           <span className="inline-flex items-center gap-2 font-medium">
             <span
               className={`inline-block h-2 w-2 rounded-full ${status.open ? "bg-emerald-300" : "bg-primary-foreground/55"}`}
@@ -29,7 +38,11 @@ export function SiteHeader() {
             {status.label}
           </span>
           <span className="inline-flex items-center gap-2 text-primary-foreground/85">
-            <MapPin className="h-3.5 w-3.5" /> {data.business.street}, {data.business.city}
+            <MapPin className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">
+              {data.business.street}, {data.business.city}
+            </span>
+            <span className="sm:hidden">{data.business.city}</span>
           </span>
         </div>
       </div>
@@ -87,9 +100,9 @@ export function SiteHeader() {
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-50 bg-black/45 md:hidden" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-[120] bg-black/50 md:hidden" onClick={() => setOpen(false)}>
           <nav
-            className="surface-glass ml-auto flex h-full w-[84%] max-w-sm flex-col gap-2 px-4 py-6"
+            className="surface-glass ml-auto flex h-dvh w-full max-w-sm flex-col gap-2 overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]"
             aria-label="Mobiele navigatie"
             onClick={(event) => event.stopPropagation()}
           >

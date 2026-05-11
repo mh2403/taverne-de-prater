@@ -55,7 +55,7 @@ function AdminPage() {
 
   return (
     <SiteLayout showMobileCta={false}>
-      <section className="mx-auto max-w-7xl px-4 pb-28 pt-10 md:px-6 md:pt-16">
+      <section className="mx-auto max-w-7xl px-4 pb-56 pt-10 md:px-6 md:pb-28 md:pt-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-primary/70">Beheeromgeving</p>
@@ -715,12 +715,12 @@ function AdminPage() {
         </Card>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6">
-          <p className="text-xs text-muted-foreground">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur md:z-50">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:px-6">
+          <p className="w-full text-xs text-muted-foreground md:w-auto">
             {statusMessage || "Niet opgeslagen wijzigingen blijven enkel in dit formulier."}
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 md:flex md:w-auto md:flex-wrap">
             <button
               type="button"
               onClick={restorePublished}
