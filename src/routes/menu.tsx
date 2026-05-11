@@ -17,12 +17,15 @@ function MenuPage() {
         <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">{data.copy.menuTitle}</h1>
         <p className="mt-4 max-w-2xl text-foreground/75">{data.copy.menuIntro}</p>
 
-        <nav aria-label="Categorieën" className="mt-10 flex flex-wrap gap-2">
+        <nav
+          aria-label="Categorieën"
+          className="surface-glass mt-10 flex gap-2 overflow-x-auto rounded-2xl p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {data.menu.map((c) => (
             <a
               key={c.id}
               href={`#${c.id}`}
-              className="rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium text-foreground/80 hover:border-primary hover:text-primary"
+              className="shrink-0 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground/85 hover:border-primary hover:text-primary"
             >
               {c.title}
             </a>
@@ -31,7 +34,7 @@ function MenuPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 md:px-6">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="section-shell rounded-2xl p-5 shadow-sm">
           <h2 className="font-serif text-2xl text-primary">Originele kaartfoto's</h2>
           {visiblePhotos.length > 0 ? (
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -67,7 +70,7 @@ function MenuPage() {
             <article
               id={cat.id}
               key={cat.id}
-              className="scroll-mt-24 rounded-2xl border border-border bg-card p-7 shadow-sm"
+              className="section-shell scroll-mt-24 rounded-2xl p-7 shadow-sm"
             >
               <h2 className="font-serif text-2xl text-primary">{cat.title}</h2>
               {cat.intro && <p className="mt-2 text-sm text-muted-foreground">{cat.intro}</p>}

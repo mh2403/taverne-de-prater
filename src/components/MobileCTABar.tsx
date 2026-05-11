@@ -6,27 +6,30 @@ export function MobileCTABar() {
   const { data } = useSiteContent();
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur md:hidden">
-      <div className="grid grid-cols-3 text-xs">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/94 backdrop-blur-xl md:hidden">
+      <div className="mx-auto grid max-w-lg grid-cols-3 gap-2 px-3 py-2 text-xs">
         <a
           href={`tel:${data.business.phoneIntl}`}
-          className="flex flex-col items-center gap-1 py-3 text-primary"
+          className="inline-flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg bg-primary text-primary-foreground"
         >
-          <Phone className="h-5 w-5" />
-          <span className="font-medium">Bel</span>
+          <Phone className="h-4 w-4" />
+          <span className="font-semibold">Bel</span>
         </a>
         <a
           href={data.business.mapsUrl}
           target="_blank"
           rel="noopener"
-          className="flex flex-col items-center gap-1 border-x border-border/60 py-3 text-foreground/85"
+          className="inline-flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card text-foreground"
         >
-          <MapPin className="h-5 w-5" />
-          <span className="font-medium">Route</span>
+          <MapPin className="h-4 w-4" />
+          <span className="font-semibold">Route</span>
         </a>
-        <Link to="/menu" className="flex flex-col items-center gap-1 py-3 text-foreground/85">
-          <UtensilsCrossed className="h-5 w-5" />
-          <span className="font-medium">Menu</span>
+        <Link
+          to="/menu"
+          className="inline-flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card text-foreground"
+        >
+          <UtensilsCrossed className="h-4 w-4" />
+          <span className="font-semibold">Menu</span>
         </Link>
       </div>
     </div>

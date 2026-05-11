@@ -81,7 +81,7 @@ function HomePage() {
           ].map((u) => (
             <div
               key={u.title}
-              className="rounded-2xl border border-border bg-card p-6 text-left shadow-sm"
+              className="section-shell hover-lift rounded-2xl p-6 text-left shadow-sm"
             >
               <u.icon className="h-6 w-6 text-primary" />
               <h3 className="mt-4 font-serif text-xl">{u.title}</h3>
@@ -92,7 +92,7 @@ function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-8 md:px-6">
-        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <div className="section-shell overflow-hidden rounded-3xl shadow-sm">
           <div className="bg-primary px-6 py-5 text-primary-foreground">
             <p className="text-xs uppercase tracking-[0.25em] text-gold">Deze week</p>
             <h2 className="mt-2 font-serif text-3xl">{data.weeklyMenu.title}</h2>
@@ -101,7 +101,10 @@ function HomePage() {
           <div className="grid gap-4 p-6 lg:grid-cols-2">
             <div className="space-y-3">
               {data.weeklyMenu.days.map((day) => (
-                <div key={day.label} className="rounded-xl border border-border p-4">
+                <div
+                  key={day.label}
+                  className="rounded-xl border border-border/70 bg-background/70 p-4"
+                >
                   <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                     {day.label}
                   </p>
@@ -110,14 +113,14 @@ function HomePage() {
               ))}
             </div>
             <div className="space-y-3">
-              <div className="rounded-xl border border-border p-4">
+              <div className="rounded-xl border border-border/70 bg-background/70 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                   Weekend menu
                 </p>
                 <p className="mt-1 text-sm text-foreground/85">{data.weeklyMenu.weekendStarter}</p>
                 <p className="mt-1 text-sm text-foreground/85">{data.weeklyMenu.weekendMain}</p>
               </div>
-              <div className="rounded-xl border border-border p-4">
+              <div className="rounded-xl border border-border/70 bg-background/70 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                   Prijzen
                 </p>
@@ -237,7 +240,7 @@ function HomePage() {
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {data.reviews.map((r, i) => (
-              <figure key={i} className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+              <figure key={i} className="section-shell hover-lift rounded-2xl p-6 shadow-sm">
                 <Wine className="h-5 w-5 text-gold" />
                 <blockquote className="mt-3 text-foreground/85">"{r.text}"</blockquote>
                 <figcaption className="mt-4 text-xs uppercase tracking-wider text-muted-foreground">

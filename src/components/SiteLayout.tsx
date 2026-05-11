@@ -12,7 +12,7 @@ export function SiteLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-3">{children}</main>
       <SiteFooter />
       {showMobileCta ? <MobileCTABar /> : null}
     </div>
