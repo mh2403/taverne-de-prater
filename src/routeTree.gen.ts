@@ -13,6 +13,7 @@ import { Route as SfeerRouteImport } from './routes/sfeer'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as DagmenuRouteImport } from './routes/dagmenu'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SfeerRoute = SfeerRouteImport.update({
@@ -35,6 +36,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/dagmenu': typeof DagmenuRoute
   '/menu': typeof MenuRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/dagmenu': typeof DagmenuRoute
   '/menu': typeof MenuRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/dagmenu': typeof DagmenuRoute
   '/menu': typeof MenuRoute
@@ -65,14 +74,15 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
+  fullPaths: '/' | '/admin' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
-  id: '__root__' | '/' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
+  to: '/' | '/admin' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
+  id: '__root__' | '/' | '/admin' | '/contact' | '/dagmenu' | '/menu' | '/sfeer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   DagmenuRoute: typeof DagmenuRoute
   MenuRoute: typeof MenuRoute
@@ -109,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +138,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   DagmenuRoute: DagmenuRoute,
   MenuRoute: MenuRoute,

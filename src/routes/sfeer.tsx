@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useSiteContent } from "@/lib/site-content";
 import terras from "@/assets/terras.jpg";
 import interior from "@/assets/interior.jpg";
 import dish from "@/assets/dish.jpg";
@@ -9,14 +10,6 @@ import dessert from "@/assets/dessert.jpg";
 import coffee from "@/assets/coffee.jpg";
 
 export const Route = createFileRoute("/sfeer")({
-  head: () => ({
-    meta: [
-      { title: "Sfeer & terras | De Prater Sint-Niklaas" },
-      { name: "description", content: "Een blik in De Prater: gezellig interieur, zonnig terras op de Grote Markt en lekkere gerechten." },
-      { property: "og:title", content: "Sfeer & terras | De Prater Sint-Niklaas" },
-      { property: "og:image", content: "/og-sfeer.jpg" },
-    ],
-  }),
   component: SfeerPage,
 });
 
@@ -31,14 +24,16 @@ const photos = [
 ];
 
 function SfeerPage() {
+  const { data } = useSiteContent();
+
   return (
     <SiteLayout>
       <section className="mx-auto max-w-6xl px-4 pt-16 md:px-6 md:pt-24">
         <p className="text-xs uppercase tracking-[0.25em] text-primary/70">Een blik binnen</p>
-        <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">Sfeer & terras</h1>
-        <p className="mt-4 max-w-2xl text-foreground/75">
-          Of je nu binnen gezellig plaatsneemt of buiten geniet op het terras, bij De Prater zit je altijd goed.
-        </p>
+        <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">
+          {data.copy.sfeerTitle}
+        </h1>
+        <p className="mt-4 max-w-2xl text-foreground/75">{data.copy.sfeerIntro}</p>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 md:px-6">
@@ -55,8 +50,20 @@ function SfeerPage() {
         </div>
 
         <div className="mt-12 flex flex-wrap justify-center gap-2">
-          {["Terras","Cocktails","Eten aan de bar","Grote Markt","Gezellig met vrienden","Lunch & diner"].map((b) => (
-            <span key={b} className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground/75">{b}</span>
+          {[
+            "Terras",
+            "Cocktails",
+            "Eten aan de bar",
+            "Grote Markt",
+            "Gezellig met vrienden",
+            "Lunch & diner",
+          ].map((b) => (
+            <span
+              key={b}
+              className="rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-foreground/75"
+            >
+              {b}
+            </span>
           ))}
         </div>
       </section>

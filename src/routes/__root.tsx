@@ -1,30 +1,22 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Outlet,
-  Link,
-  createRootRouteWithContext,
-  useRouter,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router";
-
-import appCss from "../styles.css?url";
+import { Link, Outlet, createRootRoute, useRouter } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { SiteContentProvider, useSiteContent } from "@/lib/site-content";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Pagina niet gevonden</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          Deze pagina bestaat niet of is verplaatst.
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
+            Terug naar home
           </Link>
         </div>
       </div>
@@ -40,104 +32,66 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          Deze pagina kon niet geladen worden
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          Er is iets misgelopen. Je kan opnieuw proberen of terug naar home gaan.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
+            type="button"
             onClick={() => {
               router.invalidate();
               reset();
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            Probeer opnieuw
           </button>
-          <a
-            href="/"
+          <Link
+            to="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
-          </a>
+            Terug naar home
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "De Prater Sint-Niklaas | Brasserie op de Grote Markt" },
-      { name: "description", content: "Welkom bij De Prater, een gezellige brasserie op de Grote Markt in Sint-Niklaas. Geniet van lunch, diner, drankjes, cocktails en terras." },
-      { name: "author", content: "De Prater" },
-      { property: "og:title", content: "De Prater Sint-Niklaas | Brasserie op de Grote Markt" },
-      { property: "og:description", content: "Gezellige brasserie op de Grote Markt in Sint-Niklaas. Lunch, diner, terras, cocktails en koffie." },
-      { property: "og:type", content: "website" },
-      { property: "og:locale", content: "nl_BE" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" },
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Restaurant",
-          name: "De Prater",
-          description: "Gezellige brasserie en taverne op de Grote Markt in Sint-Niklaas.",
-          servesCuisine: ["Belgisch", "Brasserie"],
-          priceRange: "€€",
-          telephone: "+32 3 766 06 40",
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: "Grote Markt 28",
-            postalCode: "9100",
-            addressLocality: "Sint-Niklaas",
-            addressCountry: "BE",
-          },
-          openingHoursSpecification: [
-            { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], opens: "10:00", closes: "22:00" },
-          ],
-        }),
-      },
-    ],
-  }),
-  shellComponent: RootShell,
+function SeoSync() {
+  const { data } = useSiteContent();
+
+  useEffect(() => {
+    document.title = data.seo.siteTitle;
+
+    const description = document.querySelector('meta[name="description"]');
+    if (description) {
+      description.setAttribute("content", data.seo.siteDescription);
+      return;
+    }
+
+    const meta = document.createElement("meta");
+    meta.setAttribute("name", "description");
+    meta.setAttribute("content", data.seo.siteDescription);
+    document.head.appendChild(meta);
+  }, [data.seo.siteDescription, data.seo.siteTitle]);
+
+  return null;
+}
+
+function RootComponent() {
+  return (
+    <SiteContentProvider>
+      <SeoSync />
+      <Outlet />
+    </SiteContentProvider>
+  );
+}
+
+export const Route = createRootRoute({
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
-
-function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Outlet />
-    </QueryClientProvider>
-  );
-}

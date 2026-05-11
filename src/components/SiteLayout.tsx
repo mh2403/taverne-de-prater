@@ -2,13 +2,19 @@ import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { MobileCTABar } from "./MobileCTABar";
 
-export function SiteLayout({ children }: { children: React.ReactNode }) {
+export function SiteLayout({
+  children,
+  showMobileCta = true,
+}: {
+  children: React.ReactNode;
+  showMobileCta?: boolean;
+}) {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />
-      <MobileCTABar />
+      {showMobileCta ? <MobileCTABar /> : null}
     </div>
   );
 }

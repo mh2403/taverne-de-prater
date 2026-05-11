@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu as MenuIcon, X, Phone } from "lucide-react";
-import { business } from "@/lib/content";
 import { isOpenNow } from "@/lib/hours";
+import { useSiteContent } from "@/lib/site-content";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -14,14 +14,23 @@ const nav = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const status = isOpenNow();
+  const { data } = useSiteContent();
+  const status = isOpenNow(data.openingHours);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
-        <Link to="/" className="flex items-baseline gap-2" aria-label="De Prater home">
-          <span className="font-serif text-2xl font-semibold tracking-tight text-primary">De Prater</span>
-          <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground sm:inline">Sint-Niklaas</span>
+        <Link
+          to="/"
+          className="flex items-baseline gap-2"
+          aria-label={`${data.business.name} home`}
+        >
+          <span className="font-serif text-2xl font-semibold tracking-tight text-primary">
+            {data.business.name}
+          </span>
+          <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground sm:inline">
+            {data.business.city}
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Hoofdnavigatie">
@@ -36,6 +45,12 @@ export function SiteHeader() {
               {n.label}
             </Link>
           ))}
+          <Link
+            to="/admin"
+            className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-foreground/80 hover:bg-accent"
+          >
+            Admin
+          </Link>
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -47,10 +62,10 @@ export function SiteHeader() {
             {status.label}
           </span>
           <a
-            href={`tel:${business.phoneIntl}`}
+            href={`tel:${data.business.phoneIntl}`}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            <Phone className="h-4 w-4" /> {business.phone}
+            <Phone className="h-4 w-4" /> {data.business.phone}
           </a>
         </div>
 
@@ -80,6 +95,13 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
+            <Link
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-3 text-base font-medium text-primary hover:bg-accent"
+            >
+              Admin
+            </Link>
             <span className="px-3 pb-3 pt-2 text-xs text-muted-foreground">{status.label}</span>
           </nav>
         </div>

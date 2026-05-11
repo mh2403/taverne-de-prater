@@ -1,11 +1,16 @@
-import { openingHours } from "./content";
+import { defaultSiteData, type OpeningHour } from "./content";
 
-export function isOpenNow(date = new Date()): { open: boolean; label: string } {
-  const dayIdx = date.getDay(); // 0 = zondag
-  // map JS day to our array (Maandag = 0)
+export function isOpenNow(
+  openingHours: OpeningHour[] = defaultSiteData.openingHours,
+  date = new Date(),
+): { open: boolean; label: string } {
+  const dayIdx = date.getDay();
   const map = [6, 0, 1, 2, 3, 4, 5];
   const today = openingHours[map[dayIdx]];
-  if (!today.open || !today.close) return { open: false, label: "Vandaag gesloten" };
+
+  if (!today || !today.open || !today.close) {
+    return { open: false, label: "Vandaag gesloten" };
+  }
 
   const [oH, oM] = today.open.split(":").map(Number);
   const [cH, cM] = today.close.split(":").map(Number);
@@ -16,8 +21,10 @@ export function isOpenNow(date = new Date()): { open: boolean; label: string } {
   if (now >= open && now < close) {
     return { open: true, label: `Nu open · tot ${today.close}` };
   }
+
   if (now < open) {
     return { open: false, label: `Vandaag open vanaf ${today.open}` };
   }
+
   return { open: false, label: "Nu gesloten" };
 }
