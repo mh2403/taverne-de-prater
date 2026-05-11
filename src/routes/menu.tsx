@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useSiteContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/menu")({
@@ -9,31 +12,64 @@ export const Route = createFileRoute("/menu")({
 function MenuPage() {
   const { data } = useSiteContent();
   const visiblePhotos = data.menuPhotos.filter((photo) => photo.src.trim().length > 0);
+  const isMobile = useIsMobile();
+  const [showCategories, setShowCategories] = useState(false);
 
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-6xl px-4 pt-16 md:px-6 md:pt-24">
+      <section className="mx-auto max-w-6xl overflow-x-clip px-4 pt-12 md:px-6 md:pt-24">
         <p className="text-xs uppercase tracking-[0.25em] text-primary/70">De kaart</p>
         <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">{data.copy.menuTitle}</h1>
         <p className="mt-4 max-w-2xl text-foreground/75">{data.copy.menuIntro}</p>
 
-        <nav
-          aria-label="Categorieën"
-          className="surface-glass mt-10 flex gap-2 overflow-x-auto rounded-2xl p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {data.menu.map((c) => (
-            <a
-              key={c.id}
-              href={`#${c.id}`}
-              className="shrink-0 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground/85 hover:border-primary hover:text-primary"
+        {isMobile ? (
+          <div className="surface-glass mt-8 rounded-2xl p-3">
+            <button
+              type="button"
+              onClick={() => setShowCategories((value) => !value)}
+              className="inline-flex min-h-11 w-full items-center justify-between rounded-xl border border-border bg-card px-4 text-left text-sm font-semibold"
+              aria-expanded={showCategories}
+              aria-controls="menu-categories"
             >
-              {c.title}
-            </a>
-          ))}
-        </nav>
+              Categorieën ({data.menu.length})
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${showCategories ? "rotate-180" : ""}`}
+              />
+            </button>
+            {showCategories ? (
+              <div id="menu-categories" className="mt-3 grid grid-cols-2 gap-2">
+                {data.menu.map((c) => (
+                  <a
+                    key={c.id}
+                    href={`#${c.id}`}
+                    className="rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground/85"
+                    onClick={() => setShowCategories(false)}
+                  >
+                    {c.title}
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <nav
+            aria-label="Categorieën"
+            className="surface-glass mt-10 flex gap-2 overflow-x-auto rounded-2xl p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {data.menu.map((c) => (
+              <a
+                key={c.id}
+                href={`#${c.id}`}
+                className="shrink-0 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground/85 hover:border-primary hover:text-primary"
+              >
+                {c.title}
+              </a>
+            ))}
+          </nav>
+        )}
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-12 md:px-6">
+      <section className="mx-auto max-w-6xl overflow-x-clip px-4 py-10 md:px-6 md:py-12">
         <div className="section-shell rounded-2xl p-5 shadow-sm">
           <h2 className="font-serif text-2xl text-primary">Originele kaartfoto's</h2>
           {visiblePhotos.length > 0 ? (
@@ -64,31 +100,32 @@ function MenuPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:pb-16">
-        <div className="grid gap-10 md:grid-cols-2">
+      <section className="mx-auto max-w-6xl overflow-x-clip px-4 pb-6 md:px-6 md:pb-16">
+        <div className="grid gap-6 md:grid-cols-2 md:gap-10">
           {data.menu.map((cat) => (
             <article
               id={cat.id}
               key={cat.id}
-              className="section-shell scroll-mt-24 rounded-2xl p-7 shadow-sm"
+              className="section-shell scroll-mt-24 overflow-hidden rounded-2xl p-6 shadow-sm md:p-7"
             >
               <h2 className="font-serif text-2xl text-primary">{cat.title}</h2>
               {cat.intro && <p className="mt-2 text-sm text-muted-foreground">{cat.intro}</p>}
               <ul className="mt-5 divide-y divide-border">
                 {cat.items.map((item, itemIndex) => (
-                  <li
-                    key={`${item.name}-${itemIndex}`}
-                    className="flex items-start justify-between gap-4 py-3"
-                  >
-                    <div>
-                      <p className="font-medium text-foreground">{item.name}</p>
-                      {item.description && (
-                        <p className="mt-0.5 text-sm text-muted-foreground">{item.description}</p>
-                      )}
+                  <li key={`${item.name}-${itemIndex}`} className="flex items-start gap-3 py-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="break-words font-medium text-foreground">{item.name}</p>
+                      {item.description ? (
+                        <p className="mt-0.5 break-words text-sm text-muted-foreground">
+                          {item.description}
+                        </p>
+                      ) : null}
                     </div>
-                    {item.price && (
-                      <span className="font-serif text-base text-primary">{item.price}</span>
-                    )}
+                    {item.price ? (
+                      <span className="max-w-[44%] shrink-0 text-right font-serif text-base leading-snug text-primary break-words">
+                        {item.price}
+                      </span>
+                    ) : null}
                   </li>
                 ))}
               </ul>

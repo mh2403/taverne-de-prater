@@ -10,7 +10,7 @@ export function SiteLayout({
   showMobileCta?: boolean;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-x-clip">
       <SiteHeader />
       <main className="flex-1 pb-3">{children}</main>
       <SiteFooter />

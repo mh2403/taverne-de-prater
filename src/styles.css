@@ -105,6 +105,7 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv01";
     line-height: 1.55;
+    overflow-x: clip;
   }
 
   h1,
